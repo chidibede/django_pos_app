@@ -1,0 +1,29 @@
+{% extends 'pointofsale/mainapp_layout.html' %}
+{% load static %}
+
+{% block title %} User Profile {% endblock title %}
+
+{% block content %} 
+<div class="container">
+    {% if user.is_authenticated %}
+    <div class="row mt-4 mx-auto">
+        <div class="col-sm-2 col-md-1 ">
+            <img src="{% static 'pointofsale/img/default-image.jpg' %}"
+            alt="" class="img-rounded img-responsive" height="500" width="800"/>
+        </div>
+        <div class="col-sm-2 col-md-4">
+            <blockquote>
+                <h2>{{ user.first_name }} <span>{{ user.last_name }}</span></h2> <h4><cite title="Source Title">{{ user.username }}  <i class="glyphicon glyphicon-map-marker"></i></cite></small>
+            </blockquote>
+            <p> <i class="glyphicon glyphicon-envelope"></i> {{ user.email}}
+            <br>
+            <p> <i class="glyphicon glyphicon-envelope"></i> {{ current_time}}
+                
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+
+{% endblock content %}

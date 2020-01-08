@@ -1,0 +1,30 @@
+{% extends 'pointofsale/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<nav class="navbar navbar-expand-md navbar-dark sticky-top" id="my-nav">
+
+        <div class=" navbar-collapse collapse" id="navbar-menu">
+
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a href="{% url 'pointofsale-home' %}" class="nav-link text-light">Home</a></li>
+                <li class="nav-item"><a href="{% url 'users-register' %}" class="nav-link text-light">Register</a></li>
+                <li class="nav-item"><a href="{% url 'users-login' %}" class="nav-link text-light">Login</a></li>
+            </ul>
+</nav>
+
+<div class='container'>
+    <div class='row'>
+        <div class=' col-md-7 col-sm-8 col-lg-6 login-content-section mx-auto'>
+           <div class="p-4 text-center">
+               <h4>You have been logged out</h4>
+               <p>Return to <a href="{% url 'pointofsale-home' %}">Homepage</a> or <a href="{% url 'users-login' %}">Login</a> </p>
+           </div>
+
+        </div>
+    </div>
+</div>
+
+
+ 
+{% endblock content %}

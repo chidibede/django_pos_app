@@ -1,0 +1,44 @@
+{% extends 'pointofsale/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<nav class="navbar navbar-expand-md navbar-dark sticky-top" id="my-nav">
+
+        <div class=" navbar-collapse collapse" id="navbar-menu">
+
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a href="{% url 'pointofsale-home' %}" class="nav-link text-light">Home</a></li>
+                <li class="nav-item"><a href="{% url 'users-register' %}" class="nav-link text-light">Register</a></li>
+                <li class="nav-item"><a href="{% url 'users-login' %}" class="nav-link text-light">Login</a></li>
+            </ul>
+</nav>
+
+<div class='container'>
+    <div class='row'>
+        <div class=' col-md-7 col-sm-8 col-lg-6 login-content-section mx-auto'>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <fieldset class='form-group'>
+                    <legend class="text-center">Staff Login</legend>
+        
+                        <div class='form-group'>
+                            {{ form|crispy }}
+                        </div>
+        
+                </fieldset>
+        
+                <div class='form-group'>
+                    <button class="btn btn-info form-control">Login</button>
+                </div>
+            </form>
+
+            <div>
+                <span class='text-muted'>Forgot Password? Click <a href='#'>here</a> to reset</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+{% endblock content %}

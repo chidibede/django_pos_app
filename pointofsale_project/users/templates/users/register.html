@@ -1,0 +1,42 @@
+{% extends 'pointofsale/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<nav class="navbar navbar-expand-sm navbar-dark sticky-top" id="my-nav">
+        <button class='navbar-toggler ml-auto' type="button" data-toggle='collapse' data-target='#homemenu'>
+            <span class='navbar-toggler-icon'></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="homemenu">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a href="{% url 'pointofsale-home' %}" class="nav-link text-light">Home</a></li>
+                <li class="nav-item"><a href="{% url 'users-register' %}" class="nav-link text-light">Register</a></li>
+                <li class="nav-item"><a href="{% url 'users-login' %}" class="nav-link text-light">Login</a></li>
+            </ul>
+        </div>
+          
+</nav>
+
+<div class='container'>
+    <div class='row'>
+        <div class=' col-md-7 col-sm-8 col-lg-6 content-section mx-auto'>
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class='form-group'>
+                    <legend class="text-center">Register Staff</legend>
+                    <div class='form-group'>
+                       {{ form|crispy }}
+                    </div>
+                </fieldset>
+        
+                <div class='form-group'>
+                    <button class="btn btn-info form-control">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+ 
+{% endblock content %}

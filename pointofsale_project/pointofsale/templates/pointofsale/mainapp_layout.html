@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'pointofsale/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'pointofsale/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'pointofsale/css/mainapp.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/select.bootstrap4.min.css' %}"/>
+    <title>{% block title %} {% endblock title %}</title>
+</head> 
+
+<body>
+    <!-- Beginning of Navigation -->
+
+<nav class="navbar navbar-expand-md navbar-light">
+    <button class="navbar-toggler ml-auto" data-toggle='collapse' data-target='#mynav'>
+        <span class='navbar-toggler-icon'></span>
+    </button>
+
+    <!-- Beginning of navigation div -->
+
+    <div class="collapse navbar-collapse" id=mynav>
+        <div class="container-fluid">
+            <div class="row mb-4">
+
+                <!-- beginning of top navbar -->
+                <div class="col-xl-12 col-lg-12 col-md-12 top-nav fixed-top ml-auto">
+                    <div class="row align-items-center p-2">
+                        <div class="col-md-3">
+                            <a href="{% url 'pointofsale-dashboard' %}" class='nav-link d-block text-light sidebar-link'>DASHBOARD</a>
+                        </div>
+                        <div class="col-md-4">
+                            <form action=""></form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="search... ">
+                                    <button type=button class="btn btn-light search-button" ><i class='fas fa-search'></i></button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-5">
+                            <ul class="navbar-nav">
+                                <li class='nav-item'>
+                                    <a href="#" class="nav-link text-light sidebar-link">
+                                        <i class="fas fa-shopping-cart mr-4"></i>
+                                        Sell
+                                    </a>
+                                </li>
+                                
+                                {% if user.is_authenticated %}
+                                <li class='nav-item ml-auto'>
+                                     <a href="{% url 'users-profile' %}" class='nav-link text-light sidebar-link'>{{ user.username }}</a>
+                                </li>
+                                {% endif %}
+                                <li class='nav-item '>
+                                    <a href="#" class="nav-link text-light sidebar-link">
+                                        <i class="fas fa-bell mr-4"></i>
+                                    </a>
+                                </li>
+                                
+                                <li class='nav-item' data-toggle="modal" data-target='#sign-out-modal'>
+                                    <a href="#" class="nav-link text-light sidebar-link text-danger">
+                                        <i class="fas fa-sign-out-alt mr-4 sign-out"></i>
+                                    </a>
+                                </li>
+                        </div>
+                    </div>
+                </div> <!-- End of row class  -->
+                <!-- end of top navbar -->
+
+            </div>
+        <!-- </div> End of container fluid div -->
+
+    </div>
+    <!-- End of navigation div -->
+</nav>
+        <div class="col-md-6 mx-auto mt-4">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% block content %} {% endblock content %}
+
+   
+
+    <!-- Beginning of all Bootstrap modal codes for the inventory page -->
+<section>
+    <!-- Sign out modal -->
+    <div class="modal fade" id="sign-out-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Do you want to leave?</h4>
+                    <button type='button' class='close text-danger' data-dismiss='modal'>&times;</button>
+                </div>
+    
+                <div class="modal-body">
+                    <p>Click Logout to leave</p>
+                </div>
+    
+                <div class="modal-footer">
+                    <button type='button' class='btn btn-success' data-dismiss='modal'>Stay Here</button>
+                    <a href="{% url 'users-logout' %}" class="btn btn-danger">Log out</a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- End of sign out modal -->
+</section>
+    
+
+    <script src="{% static 'pointofsale/js/jquery.min.js' %}"></script>
+    <script src="{% static 'pointofsale/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'pointofsale/js/popper.min.js' %}"></script>
+    <script src="{% static 'pointofsale/js/all.min.js' %}"></script>
+    
+    <!-- Datatable Scripts -->
+    <script type="text/javascript" src="{% static 'pointofsale/js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/dataTables.select.min.js' %}"></script>
+    <script>
+        $('.mydatatable').DataTable();
+    </script>
+</body>
+</html>
+
+

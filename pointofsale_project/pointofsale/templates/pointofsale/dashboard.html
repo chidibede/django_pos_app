@@ -1,4 +1,5 @@
 {% load static %}
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,7 +60,7 @@
                         </li>
 
                         <li class='nav-item'>
-                            <a href="#" class="nav-link text-light sidebar-link">
+                            <a href="{% url 'users-employee' %}" class="nav-link text-light sidebar-link">
                                 <i class="fas fa-user-alt fa-lg mr-4"></i>
                                 Staff
                             </a>
@@ -313,27 +314,32 @@
                 <div class="row">
                     <div class="col-12">
                         <table class="table table-striped table-bordered mydatatable bg-light">
+                    
                             <thead>
                             <tr>
                                 <th scope="col" class="text-center">#</th>
                                 <th scope="col" class="text-center"> Name</th>
                                 <th scope="col" class="text-center">Category</th>
                                 <th scope="col" class="text-center">Description</th>
-                                <th scope="col" class="text-center">Quantity_grams</th>
+                                <th scope="col" class="text-center">Qty_KG</th>
+                                <th scope="col" class="text-center">Qty_Units</th>
                                 <th scope="col" class="text-center">Selling Price</th>
                                 <th scope="col" class="text-center">Action</th>
                             </tr>
                             </thead>
         
                             <tbody>
-                               
+                            
+                             
                             <tr>
-                                <th scope="row">1</th>
-                                <td class="text-center"><a href="#" class="details">Akamu</a></td class="text-center">
-                                <td class="text-center">well</td class="text-center">
-                                <td class="text-center">very sweet</td class="text-center">
-                                <td class="text-center">1002</td class="text-center">
-                                <td class="text-center">10</td class="text-center">
+                                {% for  product in products %}
+                                <th scope="row">{{ product.id }}</th>
+                                <td class="text-center"><a href="#" class="details">{{ product.name }}</a></td class="text-center">
+                                <td class="text-center">{{ product.category }}</td class="text-center">
+                                <td class="text-center">{{ product.description }}</td class="text-center">
+                                <td class="text-center">{{ product.quantity_kg }}</td class="text-center">
+                                <td class="text-center">{{ product.quantity_units }}</td class="text-center">
+                                <td class="text-center">{{ product.selling_price }}</td class="text-center">
                                 <td class="text-center">
                                     <span>
                                         <a href="/stock/{{ product.id }}" class='btn btn-primary inventory-button' data-toggle="modal" data-target="#stock-modal{{ product.id }}">Stock</a>
@@ -346,7 +352,7 @@
                                     </span>
                                 </td>
                             </tr>
-        
+                            
                             <!-- Edit modal -->
                             <div class="modal fade" role="dialog" id="edit-modal{{product.id}}">
                                 <div class="modal-dialog">
@@ -357,45 +363,38 @@
                                         </div>
         
                                         <div class="modal-body">
-                                            <form action="" method="POST" enctype="multipart/form-data">
+                                            <form action="{% url 'update_product' %}" method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
                                                 <div class="form-group">
                                                     <label for="name">Name</label>
-                                                    <input type="hidden" value="" name="oldname">
-                                                    <input type="text" class="form-control" name="name" id="name" value="">
+                                                    <input type="hidden" value="{{product.id}}" name="product_id" id="product_id">
+                                                    <input type="text" class="form-control" name="name" id="name" value="{{product.name}}">
                                                 </div>
         
                                                 <div class="form-group">
                                                     <label for="desc">Description</label>
-                                                    <input type="hidden" value="" name="olddescription">
-                                                    <input type="text" class="form-control" name="desc" id="desc" value="">
+                                                    <input type="text" class="form-control" name="desc" id="desc" value="{{product.description}}">
                                                 </div>
         
                                                 <div class="form-group">
                                                     <label for="cost">Cost Price</label>
-                                                    <input type="hidden" value="" name="oldcostprice">
-                                                    <input type="text" class="form-control" name="cost_price" id="cost" value="">
+                                                    <input type="text" class="form-control" name="cost_price" id="cost_price" value="{{product.cost_price}}">
                                                 </div>
         
                                                 <div class="form-group">
                                                     <label for="sell">Selling Price</label>
-                                                    <input type="hidden" value="" name="oldsellingprice">
-                                                    <input type="text" class="form-control" name="selling_price" id="sell"  value="">
+                                                    <input type="text" class="form-control" name="selling_price" id="selling_price"  value="{{product.selling_price}}">
                                                 </div>
         
                                                 <div class="form-group">
-                                                    <label for="category">Category</label>
-                                                    <input type="hidden" value="" name="oldcategory">
-                                                    <input type="text" name="category" class="form-control" id="category"  value="">
+                                                    {{ update_form.category |as_crispy_field}}
                                                 </div>
         
-                                                <div class='form-group'>
-                                                    <!-- {{ image_form.image.label(class='form-control-label' %}
-                                                    {{ image_form.image(class='form-control' %} -->
-                                                </div>
+                                               
         
                                                 <div class="form-group">
                                                     <label for="category">Staff</label>
-                                                    <input type="text" name="staff" class="form-control" id="staff"  value="" readonly>
+                                                    <input type="text" name="staff" class="form-control" id="staff"  value="{{product.staff}}" readonly>
                                                 </div>
                                                 
                                                
@@ -408,7 +407,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- End of edit model -->
+                            <!-- End of Edit model -->
         
                             <!-- Stock modal -->
                             <div class="modal fade" role="dialog" id="stock-modal{{ product.id }}">
@@ -420,13 +419,21 @@
                                         </div>
         
                                         <div class="modal-body">
-                                            <form action="" method="POST">
+                                            <form action="{% url 'stock_product' %}" method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
                                                 <div class="form-group">
-                                                    <input type="hidden" value="" name="oldname">
-                                                    <label for="stockin">Name</label>
-                                                    <input type="text" class="form-control" value="" name="name">
-                                                    <label for="stockin">Quantity in grams</label>
-                                                    <input type="text" class="form-control" name="quantity_g" id="name" value="">
+                                                    <label for="name">Stock Product</label>
+                                                    <input type="hidden" value="{{product.id}}" name="product_id" id="product_id">
+                                                    <input type="text" class="form-control" name="name" id="name" value="{{product.name}}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="stockin">Quantity in KG</label>
+                                                    <input type="text" class="form-control" name="quantity_kg" id="quantity_kg" value="{{product.quantity_kg}}">
+                                                </div>
+        
+                                                <div class="form-group">
+                                                    <label for="stockin">Quantity in Units</label>
+                                                    <input type="text" class="form-control" name="quantity_units" id="quantity_units" value="{{product.quantity_units}}">
                                                 </div>
         
         
@@ -457,8 +464,9 @@
         
                                         <div class="modal-footer">
                                             <button type='button' class='btn btn-success' data-dismiss='modal'>Cancel</button>
-                                            <form action="" method='pointofsaleT'>
-                                                <input type="hidden" value="" name="name">
+                                            <form action="{% url 'delete_product' %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="{{ product.id }}" name="product_id", id="product_id">
                                                 <button type="submit" class="btn btn-danger">Delete</button>
                                             </form>
                                         </div>
@@ -467,7 +475,7 @@
                                 </div>
                             </div>
                             <!-- End of delete  modal -->
-                            
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

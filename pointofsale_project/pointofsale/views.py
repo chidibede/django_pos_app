@@ -10,7 +10,17 @@ def home(request):
     return render(request, 'pointofsale/home.html')
 
 def dashboard(request):
-    return render(request, 'pointofsale/dashboard.html')
+    products = Product.objects.all()
+    category_form = AddCategoryForm()
+    product_form = AddProductForm()
+    update_form = UpdateProductForm()
+    context = {
+        'category_form': category_form, 
+        'product_form': product_form,
+        'update_form': update_form,
+        'products': products,
+        }
+    return render(request, 'pointofsale/dashboard.html', context)
 
 def inventory(request):
     products = Product.objects.all()
@@ -60,7 +70,7 @@ def update_product(request):
         cost_price = request.POST['cost_price']
         selling_price = request.POST['selling_price']
         category = update_form.data['category']
-        product = Product.objects.filter(pk=int(product_id)).update(id=int(product_id), name=name, description=desc, cost_price=cost_price,
+        Product.objects.filter(pk=int(product_id)).update(id=int(product_id), name=name, description=desc, cost_price=cost_price,
                                             selling_price=selling_price, category_id=int(category))
         
         messages.success(request, f'Product Updated Successfully')
@@ -71,7 +81,7 @@ def stock_product(request):
         product_id = request.POST['product_id']
         quantity_kg = request.POST['quantity_kg']
         quantity_units = request.POST['quantity_units']
-        product = Product.objects.filter(pk=int(product_id)).update(quantity_kg=quantity_kg, quantity_units=quantity_units)
+        Product.objects.filter(pk=int(product_id)).update(quantity_kg=quantity_kg, quantity_units=quantity_units)
         
         messages.success(request, f'Product Stocked Successfully')
         return redirect('pointofsale-inventory')
@@ -79,7 +89,8 @@ def stock_product(request):
 def delete_product(request):
     if request.method =='POST':
         product_id = request.POST['product_id']
-        product = Product.objects.filter(pk=int(product_id)).delete()
+        Product.objects.filter(pk=int(product_id)).delete()
         
         messages.success(request, f'Product Deleted Successfully')
         return redirect('pointofsale-inventory')
+

@@ -45,22 +45,24 @@
                         <div class="col-md-5">
                             <ul class="navbar-nav">
                                 <li class='nav-item'>
-                                    <a href="#" class="nav-link text-light sidebar-link">
+                                    <a href="{% url 'pointofsale-sales' %}" class="nav-link text-light sidebar-link">
                                         <i class="fas fa-shopping-cart mr-4"></i>
                                         Sell
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link waves-effect text-info">
+                                      <span class="badge red z-depth-1 mr-1"> 1 </span>
+                                      <i class="fas fa-shopping-cart"></i>
+                                      <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                                    </a>
+                                  </li>
                                 
                                 {% if user.is_authenticated %}
                                 <li class='nav-item ml-auto'>
                                      <a href="{% url 'users-profile' %}" class='nav-link text-light sidebar-link'>{{ user.username }}</a>
                                 </li>
                                 {% endif %}
-                                <li class='nav-item '>
-                                    <a href="#" class="nav-link text-light sidebar-link">
-                                        <i class="fas fa-bell mr-4"></i>
-                                    </a>
-                                </li>
                                 
                                 <li class='nav-item' data-toggle="modal" data-target='#sign-out-modal'>
                                     <a href="#" class="nav-link text-light sidebar-link text-danger">

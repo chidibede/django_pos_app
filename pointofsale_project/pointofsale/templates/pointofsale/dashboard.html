@@ -46,7 +46,7 @@
                         </li>
 
                         <li class='nav-item'>
-                            <a href="#" class="nav-link text-light sidebar-link">
+                            <a href="{% url 'pointofsale-sales' %}" class="nav-link text-light sidebar-link">
                                 <i class="fas fa-shopping-cart fa-lg mr-4"></i>
                                 Sell
                             </a>
@@ -115,9 +115,17 @@
                         <div class="col-md-5">
                             <ul class="navbar-nav">
                                 <li class='nav-item'>
-                                    <a href="#" class="nav-link text-light sidebar-link">
+                                    <a href="{% url 'pointofsale-sales' %}" class="nav-link text-light sidebar-link">
                                         <i class="fas fa-shopping-cart mr-4"></i>
                                         Sell
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link waves-effect text-info">
+                                      <span class="badge red z-depth-1 mr-1"> 1 </span>
+                                      <i class="fas fa-shopping-cart"></i>
+                                      <span class="clearfix d-none d-sm-inline-block"> Cart </span>
                                     </a>
                                 </li>
                                 
@@ -252,7 +260,7 @@
                     <div class="col-md-3">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a href="#" class="nav-link quicklink text-center">
+                                <a href="{% url 'pointofsale-sales' %}" class="nav-link quicklink text-center">
                                     <i class="fas fa-shopping-cart fa-lg mr-4 text-info"></i>
                                     Sell Products
                                 </a>
@@ -321,7 +329,7 @@
                                 <th scope="col" class="text-center"> Name</th>
                                 <th scope="col" class="text-center">Category</th>
                                 <th scope="col" class="text-center">Description</th>
-                                <th scope="col" class="text-center">Qty_KG</th>
+                           
                                 <th scope="col" class="text-center">Qty_Units</th>
                                 <th scope="col" class="text-center">Selling Price</th>
                                 <th scope="col" class="text-center">Action</th>
@@ -334,10 +342,10 @@
                             <tr>
                                 {% for  product in products %}
                                 <th scope="row">{{ product.id }}</th>
-                                <td class="text-center"><a href="#" class="details">{{ product.name }}</a></td class="text-center">
+                                <td class="text-center"><a href="{{ product.get_absolute_url }}" class="details">{{ product.name }}</a></td class="text-center">
                                 <td class="text-center">{{ product.category }}</td class="text-center">
                                 <td class="text-center">{{ product.description }}</td class="text-center">
-                                <td class="text-center">{{ product.quantity_kg }}</td class="text-center">
+                                
                                 <td class="text-center">{{ product.quantity_units }}</td class="text-center">
                                 <td class="text-center">{{ product.selling_price }}</td class="text-center">
                                 <td class="text-center">
@@ -390,7 +398,6 @@
                                                     {{ update_form.category |as_crispy_field}}
                                                 </div>
         
-                                               
         
                                                 <div class="form-group">
                                                     <label for="category">Staff</label>

@@ -1,4 +1,5 @@
 {% load static %}
+{% load cart_template_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +34,7 @@
                         <div class="col-md-3">
                             <a href="{% url 'pointofsale-dashboard' %}" class='nav-link d-block text-light sidebar-link'>DASHBOARD</a>
                         </div>
+                        
                         <div class="col-md-4">
                             <form action=""></form>
                                 <div class="input-group">
@@ -51,15 +53,20 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link waves-effect text-info">
-                                      <span class="badge red z-depth-1 mr-1"> 1 </span>
+                                    <a href="{% url 'order-summary' %}" class="nav-link waves-effect text-info">
+                                      <span class="badge red z-depth-1"> {{ request.user| cart_item_count }} </span>
                                       <i class="fas fa-shopping-cart"></i>
-                                      <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                                      <span class="clearfix d-none d-sm-inline-block"> Receipt </span>
                                     </a>
-                                  </li>
+                                </li>
+                                <li class='nav-item ml-auto'>
+                                    <a href="{% url 'pointofsale-inventory' %}" class='nav-link text-light sidebar-link'>
+                                        <i class="fas fa-store fa-lg mr-4"></i>
+                                    </a>
+                               </li>
                                 
                                 {% if user.is_authenticated %}
-                                <li class='nav-item ml-auto'>
+                                <li class='nav-item '>
                                      <a href="{% url 'users-profile' %}" class='nav-link text-light sidebar-link'>{{ user.username }}</a>
                                 </li>
                                 {% endif %}

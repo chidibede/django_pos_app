@@ -30,15 +30,14 @@
             <h5 class="p-2"><span class="font-weight-bold">Product Category:</span>  <span>{{ product.category }}</span></h5>
             <h5 class="p-2"><span class="font-weight-bold">Cost Price:</span>  <span>&#x20A6; {{ product.cost_price }}</span></h5>
             <h5 class="p-2"><span class="font-weight-bold">Selling Price:</span>  <span>&#x20A6; {{ product.selling_price }}</span></h5>
+            <h5 class="p-2"><span class="font-weight-bold">Discount Price:</span>  <span>&#x20A6; {{ product.discount_price }}</span></h5>
             <h5 class="p-2"><span class="font-weight-bold">Registered by:</span>  <span>{{ product.staff.username }}</span></h5>
             <h5 class="p-2"><span class="font-weight-bold">Date Created:</span>  <span>{{ product.date_created }}</span></h5>
 
             <form class="d-flex justify-content-left">
               <!-- Default input -->
               <label class="ml-3" for="">Units:</label> 
-              <input type="number" value="{{ product.quantity_units }}" aria-label="Search" class="ml-2 mr-2 form-control" style="width: 100px">
-              <label for="">Kg:</label> 
-              <input type="number" value="{{ product.quantity_kg }}" aria-label="Search" class=" form-control" style="width: 100px">
+              <input type="number" value="{{ product.quantity }}" aria-label="Search" class="ml-2 mr-2 form-control" style="width: 100px">
               <div class="form-group">
                 <button class="btn btn-primary ml-1" type="submit">Add to cart
                   <i class="fas fa-shopping-cart ml-1"></i>

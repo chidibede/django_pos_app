@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from pointofsale.forms import AddCategoryForm, AddProductForm, UpdateProductForm
 from django.contrib.auth.models import User
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, View
 from pointofsale.models import Product, Purchase, PurchaseItem
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 import json
 
@@ -79,9 +82,10 @@ def update_product(request):
         desc = request.POST['desc']
         cost_price = request.POST['cost_price']
         selling_price = request.POST['selling_price']
+        discount_price = request.POST['discount_price']
         category = update_form.data['category']
         Product.objects.filter(pk=int(product_id)).update(id=int(product_id), name=name, description=desc, cost_price=cost_price,
-                                            selling_price=selling_price, category_id=int(category))
+                                            selling_price=selling_price,discount_price=discount_price, category_id=int(category))
         
         messages.success(request, f'Product Updated Successfully')
         return redirect('pointofsale-inventory')
@@ -89,9 +93,8 @@ def update_product(request):
 def stock_product(request):
     if request.method =='POST':
         product_id = request.POST['product_id']
-        quantity_kg = request.POST['quantity_kg']
-        quantity_units = request.POST['quantity_units']
-        Product.objects.filter(pk=int(product_id)).update(quantity_kg=quantity_kg, quantity_units=quantity_units)
+        quantity = request.POST['quantity']
+        Product.objects.filter(pk=int(product_id)).update(quantity=quantity)
         
         messages.success(request, f'Product Stocked Successfully')
         return redirect('pointofsale-inventory')
@@ -116,25 +119,26 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = "pointofsale/product-page.html"
 
+@login_required
 def add_to_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
     purchase_item, created = PurchaseItem.objects.get_or_create(product=product, user=request.user, purchased=False)
     purchase_qs = Purchase.objects.filter(user=request.user, purchased=False)
     if purchase_qs.exists():
         purchase = purchase_qs[0]
-        if purchase.products.filter(product__id=product.id).exists():
+        if purchase.product.filter(product__id=product.id).exists():
             purchase_item.quantity +=1
             purchase_item.save()
             messages.info(request, "This product quantity has been updated in the receipt")
         else:
-            purchase.products.add(purchase_item)
+            purchase.product.add(purchase_item)
             messages.info(request, "This product has been added to the receipt")
 
     else:
         ordered_date = timezone.now()
         purchase = Purchase.objects.create(user=request.user, ordered_date=ordered_date)
-        purchase.products.add(purchase_item)
-    return redirect("pointofsale-sales")
+        purchase.product.add(purchase_item)
+    return redirect("order-summary")
 
 def remove_from_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -142,17 +146,17 @@ def remove_from_cart(request, pk):
     if purchase_qs.exists():
         purchase = purchase_qs[0]
         # check if the order item is in the order
-        if purchase.products.filter(product__id=product.id).exists():
+        if purchase.product.filter(product__id=product.id).exists():
             purchase_item = PurchaseItem.objects.filter(product=product, user=request.user, purchased=False)[0]
-            purchase.products.remove(purchase_item)
+            purchase.product.remove(purchase_item)
             messages.info(request, "This item was removed from your cart.")
-            return redirect("pointofsale-sales")
+            return redirect("order-summary")
         else:
             messages.info(request, "This item was not in your cart")
-            return redirect("pointofsale-sales")
+            return redirect("order-summary")
     else:
         messages.info(request, "You do not have an active order")
-        return redirect("pointofsale-sales")
+        return redirect("order-summary")
 
 
 def remove_single_item_from_cart(request, pk):
@@ -161,18 +165,32 @@ def remove_single_item_from_cart(request, pk):
     if purchase_qs.exists():
         purchase = purchase_qs[0]
         # check if the order item is in the order
-        if purchase.products.filter(product__id=product.id).exists():
+        if purchase.product.filter(product__id=product.id).exists():
             purchase_item = PurchaseItem.objects.filter(product=product, user=request.user, purchased=False)[0]
             if purchase_item.quantity > 1:
                 purchase_item.quantity -= 1
                 purchase_item.save()
             else:
-                purchase.products.remove(purchase_item)
+                purchase.product.remove(purchase_item)
             messages.info(request, "This item quantity was updated.")
-            return redirect("pointofsale-sales")
+            return redirect("order-summary")
         else:
             messages.info(request, "This item was not in your cart")
-            return redirect("pointofsale-sales")
+            return redirect("order-summary")
     else:
         messages.info(request, "You do not have an active order")
-        return redirect("pointofsale-sales")
+        return redirect("order-summary")
+
+class OrderSummaryView(LoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        try:
+            purchase = Purchase.objects.get(user=self.request.user, purchased=False)
+            context = {
+                'object': purchase
+            }
+            return render(self.request, 'pointofsale/receipt.html', context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have any order")
+            return redirect('pointofsale-sales')
+        
+        

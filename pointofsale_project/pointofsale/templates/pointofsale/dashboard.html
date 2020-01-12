@@ -1,5 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load cart_template_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,12 +123,12 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link waves-effect text-info">
-                                      <span class="badge red z-depth-1 mr-1"> 1 </span>
+                                    <a href="{% url 'order-summary' %}" class="nav-link waves-effect text-info">
+                                      <span class="badge red z-depth-1"> {{ request.user| cart_item_count }} </span>
                                       <i class="fas fa-shopping-cart"></i>
-                                      <span class="clearfix d-none d-sm-inline-block"> Cart </span>
+                                      <span class="clearfix d-none d-sm-inline-block"> Receipt </span>
                                     </a>
-                                </li>
+                                  </li>
                                 
                                 {% if user.is_authenticated %}
                                 <li class='nav-item ml-auto'>
@@ -330,7 +331,7 @@
                                 <th scope="col" class="text-center">Category</th>
                                 <th scope="col" class="text-center">Description</th>
                            
-                                <th scope="col" class="text-center">Qty_Units</th>
+                                <th scope="col" class="text-center">Quantity</th>
                                 <th scope="col" class="text-center">Selling Price</th>
                                 <th scope="col" class="text-center">Action</th>
                             </tr>
@@ -346,7 +347,7 @@
                                 <td class="text-center">{{ product.category }}</td class="text-center">
                                 <td class="text-center">{{ product.description }}</td class="text-center">
                                 
-                                <td class="text-center">{{ product.quantity_units }}</td class="text-center">
+                                <td class="text-center">{{ product.quantity }}</td class="text-center">
                                 <td class="text-center">{{ product.selling_price }}</td class="text-center">
                                 <td class="text-center">
                                     <span>
@@ -434,13 +435,8 @@
                                                     <input type="text" class="form-control" name="name" id="name" value="{{product.name}}">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="stockin">Quantity in KG</label>
-                                                    <input type="text" class="form-control" name="quantity_kg" id="quantity_kg" value="{{product.quantity_kg}}">
-                                                </div>
-        
-                                                <div class="form-group">
-                                                    <label for="stockin">Quantity in Units</label>
-                                                    <input type="text" class="form-control" name="quantity_units" id="quantity_units" value="{{product.quantity_units}}">
+                                                    <label for="stockin">Quantity</label>
+                                                    <input type="text" class="form-control" name="quantity" id="quantity" value="{{product.quantity_kg}}">
                                                 </div>
         
         

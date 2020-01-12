@@ -39,9 +39,9 @@
               <label class="ml-3" for="">Units:</label> 
               <input type="number" value="{{ product.quantity }}" aria-label="Search" class="ml-2 mr-2 form-control" style="width: 100px">
               <div class="form-group">
-                <button class="btn btn-primary ml-1" type="submit">Add to cart
+                <a href="{{ product.get_add_to_cart_url }}" class="btn btn-primary ml-1" type="submit">Add to cart
                   <i class="fas fa-shopping-cart ml-1"></i>
-                </button>
+                </a>
               </div>
               
 

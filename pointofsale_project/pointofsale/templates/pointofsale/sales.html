@@ -9,11 +9,11 @@
       <section class="text-center mb-4">
         <div class="container">
           <!--Grid row-->
-        <div class="row wow fadeIn">
+        <div class="row wow fadeIn" id="myItems">
 
           <!--Grid column-->
           {% for product in products %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+          <div class="col-lg-3 col-md-4 col-sm-6 mb-4" >
 
             <!--Card-->
             <div class="card">
@@ -29,9 +29,9 @@
               <!--Card image-->
 
               <!--Card content-->
-              <div class="card-body">
+              <div class="card-body" >
                 <!--Category & Title-->
-                  <h5>
+                  <h5 class='card-title'>
                     <a href="{{ product.get_absolute_url }}" class="grey-text">{{ product.name|truncatechars:13 }} </a>  
                     <span class="ml-1"><strong>&#x20A6;{{ product.selling_price }}</strong></span>
                   </h5>

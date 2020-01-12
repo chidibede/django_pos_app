@@ -36,12 +36,7 @@
                         </div>
                         
                         <div class="col-md-4">
-                            <form action=""></form>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="search... ">
-                                    <button type=button class="btn btn-light search-button" ><i class='fas fa-search'></i></button>
-                                </div>
-                            </form>
+                            <input type="text" id="myFilter" class="form-control" onkeyup="myFunction()" placeholder="Search for names..">
                         </div>
 
                         <div class="col-md-5">
@@ -81,6 +76,7 @@
                 </div> <!-- End of row class  -->
                 <!-- end of top navbar -->
 
+
             </div>
         <!-- </div> End of container fluid div -->
 
@@ -96,6 +92,20 @@
                 {% endfor %}
             {% endif %}
         </div>
+
+        {% for product in queryset %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card">
+                  
+                  <div class="card-body">
+                    <h5>
+                      <a href="{{ product.get_absolute_url }}" class="grey-text">{{ product.name|truncatechars:13 }} </a>  
+                      <span class="ml-1"><strong>&#x20A6;{{ product.selling_price }}</strong></span>
+                    </h5>
+                  </div>
+                </div>
+            </div>
+            {% endfor %}
     {% block content %} {% endblock content %}
 
    
@@ -127,6 +137,7 @@
 </section>
     
 
+
     <script src="{% static 'pointofsale/js/jquery.min.js' %}"></script>
     <script src="{% static 'pointofsale/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'pointofsale/js/popper.min.js' %}"></script>
@@ -140,6 +151,33 @@
     <script>
         $('.mydatatable').DataTable();
     </script>
+    <script>
+        function myFunction() {
+            var input, filter, cards, cardContainer, h5, title, i;
+            input = document.getElementById("myFilter");
+            filter = input.value.toUpperCase();
+            cardContainer = document.getElementById("myItems");
+            cards = cardContainer.getElementsByClassName("card");
+            for (i = 0; i < cards.length; i++) {
+                title = cards[i].querySelector(".card-body h5.card-title");
+                if (title.innerText.toUpperCase().indexOf(filter) > -1) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+        </script>
+        <script>
+            $(document).ready(function(){
+              $("#myFilter").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myDIV *").filter(function() {
+                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+              });
+            });
+            </script>
 </body>
 </html>
 

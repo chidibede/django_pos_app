@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 
-
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
@@ -80,3 +79,6 @@ class Purchase(models.Model):
         for purchase_item in self.product.all():
             total += purchase_item.get_final_price()
         return total
+
+
+    

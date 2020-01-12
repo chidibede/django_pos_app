@@ -18,6 +18,7 @@ urlpatterns = [
     path('update_product/', views.update_product, name='update_product'),
     path('stock_product/', views.stock_product, name='stock_product'),
     path('delete_product/', views.delete_product, name='delete_product'),
+    path('print_receipt/', views.print_receipt, name='print_receipt'),
 
 ]
 

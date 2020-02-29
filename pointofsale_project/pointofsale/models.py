@@ -44,7 +44,7 @@ class PurchaseItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     purchased = models.BooleanField(default=False)
     amount_entered = models.IntegerField(default=0)
-
+    date_added = models.DateTimeField(auto_now_add=True)
     
     
     def __str__(self):
@@ -63,6 +63,11 @@ class PurchaseItem(models.Model):
         if self.product.discount_price:
             return self.get_total_discount_item_price()
         return self.get_total_item_price()
+    
+    def get_quantity(self):
+        if self.purchased:
+            return self.product.quantity - self.quantity
+    
     
 class Purchase(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

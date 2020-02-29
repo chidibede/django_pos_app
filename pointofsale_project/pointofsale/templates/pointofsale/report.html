@@ -1,0 +1,59 @@
+{% extends 'pointofsale/mainapp_layout.html' %}
+
+{% block title %} Sales Report {% endblock title %}
+
+{% block content %} 
+<!-- Start of inventory table -->
+<section>
+    <div class="container" id="myDIV">
+        <div class="row">
+            <div class="col-12">    
+                <h3 class='text-center text-muted inventory-heading'>Sales Report</h3>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-striped table-bordered mydatatable bg-light">
+                    
+                    <thead>
+                    <tr>
+                        <th scope="col" class="text-center">#</th>
+                        <th scope="col" class="text-center"> Date</th>
+                        <th scope="col" class="text-center">Product</th>
+                        <th scope="col" class="text-center">Category</th>
+                        <th scope="col" class="text-center">Quantity</th>
+                        <th scope="col" class="text-center">Price</th>
+                        <th scope="col" class="text-center">Total Price</th>
+                        <th scope="col" class="text-center">staff</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    
+                     
+                    <tr>
+                        {% for purchase in purchases %}
+                        {% if purchase.purchased %}
+                        <th scope="row">{{ purchase.id }}</th>
+                        <td class="text-center">{{ purchase.date_added }}</td class="text-center">
+                        <td class="text-center">{{ purchase.product }}</td class="text-center">
+                        <td class="text-center">{{ purchase.product.category }}</td class="text-center">
+                        <td class="text-center">{{ purchase.quantity }}</td class="text-center">
+                        <td class="text-center">{{ purchase.product.selling_price  }}</td class="text-center">
+                        <td class="text-center">{{ purchase.get_total_item_price }}</td class="text-center">
+                        <td class="text-center">{{ purchase.user }}</td class="text-center">
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+    
+    
+</section>
+
+{% endblock %}

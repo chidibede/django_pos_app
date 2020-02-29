@@ -1,3 +1,5 @@
+import json
+import pandas as pd
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,9 +12,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import FileResponse
-from reportlab.pdfgen import canvas
-import json
-import io
+
+
+
 
 
 # Create your views here.
@@ -46,6 +48,13 @@ def inventory(request):
         'products': products,
         }
     return render(request, 'pointofsale/inventory.html', context)
+
+def report(request):
+    purchases = PurchaseItem.objects.all()
+    context = {
+        'purchases': purchases
+    }
+    return render(request, 'pointofsale/report.html', context)
 
 def add_category(request):
     if request.method == 'POST':
@@ -141,6 +150,27 @@ def add_to_cart(request, pk):
         ordered_date = timezone.now()
         purchase = Purchase.objects.create(user=request.user, ordered_date=ordered_date)
         purchase.product.add(purchase_item)
+    return redirect("pointofsale-sales")
+
+@login_required
+def add_to_cart_quantity(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    purchase_item, created = PurchaseItem.objects.get_or_create(product=product, user=request.user, purchased=False)
+    purchase_qs = Purchase.objects.filter(user=request.user, purchased=False)
+    if purchase_qs.exists():
+        purchase = purchase_qs[0]
+        if purchase.product.filter(product__id=product.id).exists():
+            purchase_item.quantity +=1
+            purchase_item.save()
+            messages.info(request, "This product quantity has been updated in the receipt")
+        else:
+            purchase.product.add(purchase_item)
+            messages.info(request, "This product has been added to the receipt")
+
+    else:
+        ordered_date = timezone.now()
+        purchase = Purchase.objects.create(user=request.user, ordered_date=ordered_date)
+        purchase.product.add(purchase_item)
     return redirect("order-summary")
 
 def remove_from_cart(request, pk):
@@ -198,22 +228,17 @@ class OrderSummaryView(LoginRequiredMixin, View):
         
 
 
-def print_receipt(request):
-    # Create a file-like buffer to receive PDF data.
-    buffer = io.BytesIO()
+def receive_payment(request):
+    if request.method == 'POST':
+        purchase = Purchase.objects.get(user=request.user, purchased=False)
+        purchase_item = purchase.product.all()
+        purchase_item.update(purchased=True)
+        for item in purchase_item:
+            item.save()
+            Product.objects.filter(id=int(item.id)).update(quantity=purchase_item.get_quantity)
+        purchase.purchased = True
+        purchase.save()
+        messages.success(request, "Payment received successfully")
+        return redirect('pointofsale-sales')
 
-    # Create the PDF object, using the buffer as its "file."
-    p = canvas.Canvas(buffer)
 
-    # Draw things on the PDF. Here's where the PDF generation happens.
-    # See the ReportLab documentation for the full list of functionality.
-    p.drawString(100, 100, "Hello world.")
-
-    # Close the PDF object cleanly, and we're done.
-    p.showPage()
-    p.save()
-
-    # FileResponse sets the Content-Disposition header so that browsers
-    # present the option to save the file.
-    buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='receipt.pdf')

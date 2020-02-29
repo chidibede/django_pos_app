@@ -29,7 +29,7 @@
             <td>
                 <a href="{% url 'remove_single_item_from_cart' purchase_item.product.id %}"><i class="fas fa-minus mr-2"></i></a>
                 {{ purchase_item.quantity }}
-                <a href="{% url 'add-to-cart' purchase_item.product.id %}"><i class="fas fa-plus ml-2"></i></a>
+                <a href="{% url 'add-to-cart-quantity' purchase_item.product.id %}"><i class="fas fa-plus ml-2"></i></a>
             </td>
             <td>{{ purchase_item.product.discount_price }}</td>
             <td>
@@ -68,7 +68,7 @@
             </td>
         </tr>
         {% for purchase_item in object.product.all %}
-        <!-- Edit modal -->
+        <!-- receive payment modal -->
   <div class="modal fade" role="dialog" id="receive-payment-modal{{object.id}}">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -78,33 +78,33 @@
             </div>
 
             <div class="modal-body">
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="{% url 'receive_payment' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                  <div class="form-group">
-                      <label for="category">Total Amount Due</label>
-                      <input type="text" name="amount" class="form-control" id="amount"  value="{{object.get_total}}" readonly>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="category"> Amount Tendered</label>
-                    <input type="text" name="tendered" class="form-control" id="tendered"  value="">
-                </div>
-                  
-                <div class="form-group">
-                  <label for="category">Balance</label>
-                  <input type="text" name="balance" class="form-control" id="balance"  value="" readonly>
-                </div>
-
-                <div class="form-group">
-                    <label for="category">Staff</label>
-                    <input type="text" name="staff" class="form-control" id="staff"  value="{{purchase_item.product.staff}}" readonly>
-                </div>
-                    
-                   
+                    <div class="form-group">
+                        <label for="category">Total Amount Due</label>
+                        <input type="text" name="amount" class="form-control" id="amount"  value="{{object.get_total}}" readonly>
+                    </div>
 
                     <div class="form-group">
-                        <a href="" class="btn btn-info">Receive Payment</a>
+                        <label for="category"> Amount Tendered</label>
+                        <input type="text" name="tendered" class="form-control" id="tendered"  value="">
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="category">Balance</label>
+                    <input type="text" name="balance" class="form-control" id="balance"  value="" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Staff</label>
+                        <input type="text" name="staff" class="form-control" id="staff"  value="{{purchase_item.user}}" readonly>
+                    </div>
+                        
+                    
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info">Receive Payment</button>
                     </div>
                 </form>
             </div>

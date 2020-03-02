@@ -17,6 +17,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
     cost_price = models.IntegerField(default=0)
+    total_cost_price = models.IntegerField(default=0)
     selling_price = models.IntegerField(default=0)
     discount_price = models.IntegerField(default=0)
     image_field = models.ImageField(default='default.jpg')
@@ -34,6 +35,8 @@ class Product(models.Model):
     
     def get_remove_from_cart_url(self):
         return reverse('remove-from-cart', kwargs={'pk': self.pk})
+    
+    
     
 
     
@@ -84,6 +87,10 @@ class Purchase(models.Model):
         for purchase_item in self.product.all():
             total += purchase_item.get_final_price()
         return total
+
+class Accounting(models.Model):
+    operational_cost = models.IntegerField(default=0)
+    date = models.DateTimeField(auto_now_add = True)
 
 
     

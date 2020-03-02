@@ -1,5 +1,5 @@
 from django import forms
-from pointofsale.models import Category, Product
+from pointofsale.models import Category, Product, Accounting
 
 class AddCategoryForm(forms.ModelForm):
       
@@ -30,3 +30,5 @@ class UpdateProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(UpdateProductForm, self).__init__(*args, **kwargs)
         self.fields['category'].empty_label = 'Select Category'
+
+

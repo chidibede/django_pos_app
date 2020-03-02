@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from pointofsale.models import Product, Category, PurchaseItem, Purchase
+from pointofsale.models import Product, Category, PurchaseItem, Purchase, Accounting
 
 
 # Register your models here.
@@ -21,6 +21,7 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(PurchaseItem, PurchaseItemAdmin)
+admin.site.register(Accounting)
 # @admin.register(Category)
 # @admin.register(Product)
 # @admin.register(Purchase)

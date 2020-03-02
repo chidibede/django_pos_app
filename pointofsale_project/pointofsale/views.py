@@ -6,22 +6,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from pointofsale.forms import AddCategoryForm, AddProductForm, UpdateProductForm
 from django.contrib.auth.models import User
 from django.views.generic import CreateView, ListView, DetailView, View
-from pointofsale.models import Product, Purchase, PurchaseItem
+from pointofsale.models import Product, Purchase, PurchaseItem, Accounting
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import FileResponse
 from django.db.models import Sum
-
-
-
-
-
-
-
-
-
 
 # Create your views here.
 def home(request):
@@ -30,6 +21,7 @@ def home(request):
 def dashboard(request):
     products = Product.objects.all()
     total_sales = Purchase.objects.aggregate(Sum('total_amount'))['total_amount__sum']
+    total_expenses = Product.objects.aggregate(Sum('total_cost_price'))['total_cost_price__sum']
     purchase_number = Purchase.objects.all().count()
     category_form = AddCategoryForm()
     product_form = AddProductForm()
@@ -41,6 +33,7 @@ def dashboard(request):
         'products': products,
         'purchase_number': purchase_number,
         'total_sales': total_sales,
+        'total_expenses': total_expenses,
         }
     return render(request, 'pointofsale/dashboard.html', context)
 
@@ -58,6 +51,22 @@ def inventory(request):
         'products': products,
         }
     return render(request, 'pointofsale/inventory.html', context)
+
+def accounting(request):
+    products = Product.objects.all()
+    accounting = Accounting.objects.all()
+    total_sales = Purchase.objects.aggregate(Sum('total_amount'))['total_amount__sum']
+    total_expenses = Product.objects.aggregate(Sum('total_cost_price'))['total_cost_price__sum']
+    purchase_number = Purchase.objects.all().count()
+    profit_loss = total_sales - total_expenses
+    context = {
+        'products': products, 
+        'purchase_number': purchase_number,
+        'total_sales': total_sales,
+        'total_expenses': total_expenses,
+        'profit_loss': profit_loss,
+        }
+    return render(request, 'pointofsale/accounting.html', context)
 
 def report(request):
     purchases = PurchaseItem.objects.all()
@@ -118,7 +127,9 @@ def stock_product(request):
     if request.method =='POST':
         product_id = request.POST['product_id']
         quantity = request.POST['quantity']
-        Product.objects.filter(pk=int(product_id)).update(quantity=quantity)
+        cost_price = request.POST['cost_price']
+        total_cost_price = int(cost_price) * int(quantity)
+        Product.objects.filter(pk=int(product_id)).update(quantity=quantity, total_cost_price=total_cost_price)
         
         messages.success(request, f'Product Stocked Successfully')
         return redirect('pointofsale-inventory')

@@ -8,6 +8,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='pointofsale-dashboard'),
     path('inventory/', views.inventory, name='pointofsale-inventory'),
     path('sales/', views.SalesView.as_view(), name='pointofsale-sales'),
+    path('accounting/', views.accounting, name='pointofsale-accounting'),
     path('report/', views.report, name='pointofsale-report'),
     path('order_summary/', views.OrderSummaryView.as_view(), name='order-summary'),
     path('product/<int:pk>/', views.ProductDetailView.as_view(), name='pointofsale-product-details'),

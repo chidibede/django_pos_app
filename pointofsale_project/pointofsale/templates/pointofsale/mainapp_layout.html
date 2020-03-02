@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/dataTables.bootstrap4.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/datatables.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/select.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/gijgo.min.css' %}"/>
     <title>{% block title %} {% endblock title %}</title>
 </head> 
 
@@ -60,6 +61,12 @@
                                         <i class="fas fa-store fa-lg mr-4"></i>
                                     </a>
                                </li>
+
+                               <li class='nav-item ml-auto'>
+                                    <a href="{% url 'pointofsale-report' %}" class='nav-link text-light sidebar-link'>
+                                        <i class="fas fa-chart-bar fa-lg mr-4"></i>
+                                    </a>
+                                </li>
                                 
                                 {% if user.is_authenticated %}
                                 <li class='nav-item '>
@@ -156,6 +163,7 @@
     <script type="text/javascript" src="{% static 'pointofsale/js/jquery.table2excel.js' %}"></script>
     <script type="text/javascript" src="{% static 'pointofsale/js/jspdf.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'pointofsale/js/jspdf.plugin.autotable.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/gijgo.min.js' %}"></script>
     
 
     
@@ -257,6 +265,14 @@
 
             });
                         });
+        </script>
+
+        <script>
+            $('#datepicker').datepicker({ uiLibrary: 'bootstrap4', iconsLibrary: 'fontawesome' });
+        </script>
+
+        <script>
+            $('#datepicker2').datepicker({ uiLibrary: 'bootstrap4', iconsLibrary: 'fontawesome' });
         </script>
 </body>
 </html>

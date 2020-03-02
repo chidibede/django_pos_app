@@ -64,9 +64,7 @@ class PurchaseItem(models.Model):
             return self.get_total_discount_item_price()
         return self.get_total_item_price()
     
-    def get_quantity(self):
-        if self.purchased:
-            return self.product.quantity - self.quantity
+    
     
     
 class Purchase(models.Model):
@@ -74,7 +72,9 @@ class Purchase(models.Model):
     product = models.ManyToManyField(PurchaseItem)
     start_date = models.DateTimeField(auto_now_add = True)
     ordered_date = models.DateTimeField()
+    total_amount = models.IntegerField(default=0)
     purchased = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.user.username

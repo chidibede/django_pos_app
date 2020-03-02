@@ -3,135 +3,133 @@
 {% block title %} Receipt {% endblock title %}
 
 {% block content %}
-  <main>
-    <div class="container">
-
+<section>
+    
+<div class="container">
     <div class="table-responsive text-nowrap">
-    <h2>Order Summary</h2>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Item title</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Discount Price</th>
-            <th scope="col">Total Item Price</th>
-            
-        </tr>
-        </thead>
-        <tbody>
-        {% for purchase_item in object.product.all %}
-        <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td>{{ purchase_item.product.name }}</td>
-            <td>{{ purchase_item.product.selling_price }}</td>
-            <td>
-                <a href="{% url 'remove_single_item_from_cart' purchase_item.product.id %}"><i class="fas fa-minus mr-2"></i></a>
-                {{ purchase_item.quantity }}
-                <a href="{% url 'add-to-cart-quantity' purchase_item.product.id %}"><i class="fas fa-plus ml-2"></i></a>
-            </td>
-            <td>{{ purchase_item.product.discount_price }}</td>
-            <td>
-              {% if purchase_item.product.discount_price %}
-              &#x20A6;{{ purchase_item.get_total_discount_item_price }}
-                  <span class="badge badge-primary">Saving &#x20A6;{{ purchase_item.get_amount_saved }}</span>
-              {% else %}
-              &#x20A6;{{ purchase_item.get_total_item_price }}
-              {% endif %}
-              <a style='color: red;' href="{% url 'remove-from-cart' purchase_item.product.id %}">
-                  <i class="fas fa-trash float-right"></i>
-              </a>
-              </td>
-
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan='5'>Your cart is empty</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-            <a class='btn btn-primary float-right' href="{% url 'pointofsale-sales'%}">Continue shopping</a>
-            </td>
-        </tr>
-        {% endfor %}
-        
-        {% if object.get_total %}
-        <tr>
-            <td colspan="4"><h2><b>Order Total</b></h2></td>
-            <td><h2> <b> &#x20A6;{{ object.get_total }}</b></h2>></td>
-        </tr>
-        <tr>
-            <td colspan="5">
-            <a class='btn btn-warning float-right ml-2 pr-4 pl-4' href="/payment/{{ object.id }}" data-toggle="modal" data-target="#receive-payment-modal{{ object.id }}"">Proceed to Pay</a>
-            <a class='btn btn-primary float-right' href="{% url 'pointofsale-sales' %}">Continue shopping</a>
-            </td>
-        </tr>
-        {% for purchase_item in object.product.all %}
-        <!-- receive payment modal -->
-  <div class="modal fade" role="dialog" id="receive-payment-modal{{object.id}}">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h4 class="modal-title text-center">Receive Payment</h4>
-            <button type='button' class='close text-danger' data-dismiss='modal'>&times;</button>
-            </div>
-
-            <div class="modal-body">
-                <form action="{% url 'receive_payment' %}" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    <div class="form-group">
-                        <label for="category">Total Amount Due</label>
-                        <input type="text" name="amount" class="form-control" id="amount"  value="{{object.get_total}}" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="category"> Amount Tendered</label>
-                        <input type="text" name="tendered" class="form-control" id="tendered"  value="">
-                    </div>
-                    
-                    <div class="form-group">
-                    <label for="category">Balance</label>
-                    <input type="text" name="balance" class="form-control" id="balance"  value="" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="category">Staff</label>
-                        <input type="text" name="staff" class="form-control" id="staff"  value="{{purchase_item.user}}" readonly>
-                    </div>
+            <h2 class="text-center">Order Summary</h2>
+            <table class="table mydatatable" id="exporttable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Item</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Discount</th>
+                        <th scope="col">Final_Price</th>
                         
-                    
-
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-info">Receive Payment</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- End of Edit model -->
-{% endfor %}
-
-        {% endif %}
-        </tbody>
-    </table>
-
-    </div>
-
-    </div>
-  </main>
-
-  <script>
-    document.getElementById("tendered").oninput = () => {
-    const amount = document.getElementById('amount');
-    const input = document.getElementById('tendered');
-    const output = document.getElementById('balance');
-
-    // Trying to insert text into 'output'.
-    output.value = input.value - amount.value;
-};
-  </script>
+                    </tr>
+                </thead>
+                <tbody>
+                            {% for purchase_item in object.product.all %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ purchase_item.product.name }}</td>
+                                <td>{{ purchase_item.product.selling_price }}</td>
+                                <td>
+                                    <a href="{% url 'remove_single_item_from_cart' purchase_item.product.id %}"><i class="fas fa-minus mr-2"></i></a>
+                                    {{ purchase_item.quantity }}
+                                    <a href="{% url 'add-to-cart-quantity' purchase_item.product.id %}"><i class="fas fa-plus ml-2"></i></a>
+                                </td>
+                                <td>{{ purchase_item.product.discount_price }}</td>
+                                <td>
+                                {% if purchase_item.product.discount_price %}
+                                &#x20A6;{{ purchase_item.get_total_discount_item_price }}
+                                    <span class="badge badge-primary">Saving &#x20A6;{{ purchase_item.get_amount_saved }}</span>
+                                {% else %}
+                                &#x20A6;{{ purchase_item.get_total_item_price }}
+                                {% endif %}
+                                <a style='color: red;' href="{% url 'remove-from-cart' purchase_item.product.id %}">
+                                    <i class="fas fa-trash float-right"></i>
+                                </a>
+                                </td>
   
-{% endblock content %}
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan='5'>Your cart is empty</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                <a class='btn btn-primary float-right' href="{% url 'pointofsale-sales'%}">Continue shopping</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% if object.get_total %}
+                            <tr>
+                                <td colspan="4"><h2><b>Order Total</b></h2></td>
+                                <td><h2> <b> &#x20A6;{{ object.get_total }}</b></h2>></td>
+                            </tr>
+                            <tr class="ignore">
+                                <td colspan="5">
+                                    <button id="exportexcel" class="btn btn-success ml-2 mr-2 float-right ignore">Export to Excel</button>
+                                    <button id="exporttxt" class="btn btn-success ml-2 mr-2 float-right ignore">Export to Text</button>
+                                    <a class='btn btn-warning float-right ml-2 pr-4 pl-4' href="/payment/{{ object.id }}" data-toggle="modal" data-target="#receive-payment-modal{{ object.id }}"">Proceed to Pay</a>
+                                    <a class='btn btn-primary float-right' href="{% url 'pointofsale-sales' %}">Continue shopping</a>
+                                
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"><h2><b>ASUA FRUIT AND WINE</b></h2></td>
+                            </tr>
+                            
+                            {% for purchase_item in object.product.all %}
+                            <!-- receive payment modal -->
+                    <div class="modal fade" role="dialog" id="receive-payment-modal{{object.id}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title text-center">Receive Payment</h4>
+                                    <button type='button' class='close text-danger' data-dismiss='modal'>&times;</button>
+                                </div>
+  
+                                <div class="modal-body">
+                                    <form action="{% url 'receive_payment' %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+  
+                                        <div class="form-group">
+                                            <label for="category">Total Amount Due</label>
+                                            <input type="text" name="amount" class="form-control" id="amount"  value="{{object.get_total}}" readonly>
+                                        </div>
+  
+                                        <div class="form-group">
+                                            <label for="category"> Amount Tendered</label>
+                                            <input type="text" name="tendered" class="form-control" id="tendered"  value="">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                        <label for="category">Balance</label>
+                                        <input type="text" name="balance" class="form-control" id="balance"  value="" readonly>
+                                        </div>
+  
+                                        <div class="form-group">
+                                            <label for="category">Staff</label>
+                                            <input type="text" name="staff" class="form-control" id="staff"  value="{{purchase_item.user}}" readonly>
+                                        </div>
+                                            
+                                        
+  
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-info">Receive Payment</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of Edit model -->
+                    {% endfor %}
+  
+                    {% endif %}
+                </tbody>
+            </table>
+  </div>
+  </div>
+</section>
+
+
+
+
+  
+{% endblock %}

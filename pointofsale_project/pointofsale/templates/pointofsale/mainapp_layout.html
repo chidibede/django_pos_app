@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'pointofsale/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'pointofsale/css/mainapp.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/datatables.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'pointofsale/css/select.bootstrap4.min.css' %}"/>
     <title>{% block title %} {% endblock title %}</title>
 </head> 
@@ -146,10 +147,33 @@
     <!-- Datatable Scripts -->
     <script type="text/javascript" src="{% static 'pointofsale/js/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'pointofsale/js/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/datatables.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'pointofsale/js/dataTables.bootstrap4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'pointofsale/js/dataTables.select.min.js' %}"></script>
-    <script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/pdfmake.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/vfs_fonts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/tableHTMLExport.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/jquery.table2excel.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/jspdf.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pointofsale/js/jspdf.plugin.autotable.min.js' %}"></script>
+    
+
+    
+    <!-- <script>
         $('.mydatatable').DataTable();
+    </script> -->
+    <script>
+        $(document).ready( function () {
+        $('.mydatatable').DataTable({
+    
+        dom: 'B<"clear">lfrtip',
+        buttons: {
+            name: 'primary',
+            buttons: [ 'copy', 'csv', 'excel', 'pdf' ]
+    
+            }}
+        );
+    } );
     </script>
     <script>
         function myFunction() {
@@ -177,7 +201,63 @@
                 });
               });
             });
-            </script>
+        </script>
+
+        <script>
+            document.getElementById("tendered").oninput = () => {
+            const amount = document.getElementById('amount');
+            const input = document.getElementById('tendered');
+            const output = document.getElementById('balance');
+
+            // Trying to insert text into 'output'.
+            output.value = input.value - amount.value;
+        };
+        </script>
+
+        <script>
+           $("#exportexcel").click(function(){
+            $("#exporttable").tableHTMLExport({
+
+            // csv, txt, json, pdf
+            type:'csv',
+
+            // file name
+            filename:'receipt.csv',
+            
+            separator:',',
+
+            newline:'\r\n',
+
+            trimContent:true,
+
+            quoteFields:true,
+
+            htmlContent:false,
+
+            consoleLog:false,      
+            ignoreColumns: '.ignore',
+            ignoreRows: '.ignore'   
+
+            });
+                        });
+        </script>
+
+        <script>
+            $("#exporttxt").click(function(){
+            $("#exporttable").tableHTMLExport({
+
+            // csv, txt, json, pdf
+            type:'txt',
+
+            // file name
+            filename:'receipt.txt',
+
+            ignoreColumns: '.ignore',
+            ignoreRows: '.ignore'   
+
+            });
+                        });
+        </script>
 </body>
 </html>
 

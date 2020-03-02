@@ -12,6 +12,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import FileResponse
+from django.db.models import Sum
+
+
+
+
+
 
 
 
@@ -23,6 +29,8 @@ def home(request):
 
 def dashboard(request):
     products = Product.objects.all()
+    total_sales = Purchase.objects.aggregate(Sum('total_amount'))['total_amount__sum']
+    purchase_number = Purchase.objects.all().count()
     category_form = AddCategoryForm()
     product_form = AddProductForm()
     update_form = UpdateProductForm()
@@ -31,6 +39,8 @@ def dashboard(request):
         'product_form': product_form,
         'update_form': update_form,
         'products': products,
+        'purchase_number': purchase_number,
+        'total_sales': total_sales,
         }
     return render(request, 'pointofsale/dashboard.html', context)
 
@@ -51,8 +61,10 @@ def inventory(request):
 
 def report(request):
     purchases = PurchaseItem.objects.all()
+    total_sales = Purchase.objects.aggregate(Sum('total_amount'))['total_amount__sum']
     context = {
-        'purchases': purchases
+        'purchases': purchases,
+        'total_sales': total_sales,
     }
     return render(request, 'pointofsale/report.html', context)
 
@@ -182,6 +194,7 @@ def remove_from_cart(request, pk):
         if purchase.product.filter(product__id=product.id).exists():
             purchase_item = PurchaseItem.objects.filter(product=product, user=request.user, purchased=False)[0]
             purchase.product.remove(purchase_item)
+            purchase_item.delete()
             messages.info(request, "This item was removed from your cart.")
             return redirect("order-summary")
         else:
@@ -234,8 +247,12 @@ def receive_payment(request):
         purchase_item = purchase.product.all()
         purchase_item.update(purchased=True)
         for item in purchase_item:
+            print(item.product.id)
+            print(item.product.quantity)
+            print(item.quantity)
+            Product.objects.filter(pk=int(item.product.id)).update(quantity=(item.product.quantity - item.quantity))
             item.save()
-            Product.objects.filter(id=int(item.id)).update(quantity=purchase_item.get_quantity)
+        purchase.total_amount = purchase.get_total()  
         purchase.purchased = True
         purchase.save()
         messages.success(request, "Payment received successfully")

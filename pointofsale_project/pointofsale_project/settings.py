@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'pointofsale.apps.PointofsaleConfig',
     'users.apps.UsersConfig', 
     'crispy_forms',
+    'import_export',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

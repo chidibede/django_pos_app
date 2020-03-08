@@ -59,7 +59,10 @@ def accounting(request):
     total_sales = Purchase.objects.aggregate(Sum('total_amount'))['total_amount__sum']
     total_expenses = Product.objects.aggregate(Sum('total_cost_price'))['total_cost_price__sum']
     purchase_number = Purchase.objects.filter(purchased=True).count()
-    profit_loss = total_sales - total_expenses
+    if total_expenses == None and total_sales == None:
+        profit_loss = None
+    else:
+        profit_loss = total_sales - total_expenses
     context = {
         'products': products, 
         'purchase_number': purchase_number,

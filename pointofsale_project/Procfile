@@ -1,0 +1,1 @@
+web: gunicorn pointofsale_project.wsgi

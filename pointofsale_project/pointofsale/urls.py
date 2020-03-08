@@ -10,6 +10,7 @@ urlpatterns = [
     path('sales/', views.SalesView.as_view(), name='pointofsale-sales'),
     path('accounting/', views.accounting, name='pointofsale-accounting'),
     path('report/', views.report, name='pointofsale-report'),
+    path('search/', views.search, name='search'),
     path('order_summary/', views.OrderSummaryView.as_view(), name='order-summary'),
     path('product/<int:pk>/', views.ProductDetailView.as_view(), name='pointofsale-product-details'),
     path('add-to-cart/<int:pk>/', views.add_to_cart, name='add-to-cart'),
@@ -20,6 +21,7 @@ urlpatterns = [
     path('add_product/', views.add_product, name='add_product'),
     path('update_product/', views.update_product, name='update_product'),
     path('stock_product/', views.stock_product, name='stock_product'),
+    path('filter_date/', views.filter_date, name='filter_date'),
     path('delete_product/', views.delete_product, name='delete_product'),
     path('receive_payment/', views.receive_payment, name='receive_payment'),
 

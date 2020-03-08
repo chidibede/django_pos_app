@@ -38,8 +38,13 @@
                         </div>
                         
                         <div class="col-md-4">
-                            <input type="text" id="myFilter" class="form-control" onkeyup="myFunction()" placeholder="Search for names..">
+                            <form class="form-inline my-2 my-lg-0" method="POST", action="{% url 'search' %}">
+                                {% csrf_token %}
+                                <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search for items..." aria-label="Search">
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
                         </div>
+                        
 
                         <div class="col-md-5">
                             <ul class="navbar-nav">
@@ -200,16 +205,6 @@
             }
         }
         </script>
-        <script>
-            $(document).ready(function(){
-              $("#myFilter").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#myDIV *").filter(function() {
-                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-              });
-            });
-        </script>
 
         <script>
             document.getElementById("tendered").oninput = () => {
@@ -269,10 +264,11 @@
 
         <script>
             $('#datepicker').datepicker({ uiLibrary: 'bootstrap4', iconsLibrary: 'fontawesome' });
+            
         </script>
 
         <script>
-            $('#datepicker2').datepicker({ uiLibrary: 'bootstrap4', iconsLibrary: 'fontawesome' });
+            $('#datepicker2').datepicker({ uiLibrary: 'bootstrap4', iconsLibrary: 'fontawesome'});
         </script>
 </body>
 </html>

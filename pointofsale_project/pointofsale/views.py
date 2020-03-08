@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import FileResponse
 from django.db.models import Sum
+import datetime
 
 # Create your views here.
 def home(request):
@@ -22,7 +23,7 @@ def dashboard(request):
     products = Product.objects.all()
     total_sales = Purchase.objects.aggregate(Sum('total_amount'))['total_amount__sum']
     total_expenses = Product.objects.aggregate(Sum('total_cost_price'))['total_cost_price__sum']
-    purchase_number = Purchase.objects.all().count()
+    purchase_number = Purchase.objects.filter(purchased=True).count()
     category_form = AddCategoryForm()
     product_form = AddProductForm()
     update_form = UpdateProductForm()
@@ -57,7 +58,7 @@ def accounting(request):
     accounting = Accounting.objects.all()
     total_sales = Purchase.objects.aggregate(Sum('total_amount'))['total_amount__sum']
     total_expenses = Product.objects.aggregate(Sum('total_cost_price'))['total_cost_price__sum']
-    purchase_number = Purchase.objects.all().count()
+    purchase_number = Purchase.objects.filter(purchased=True).count()
     profit_loss = total_sales - total_expenses
     context = {
         'products': products, 
@@ -67,6 +68,45 @@ def accounting(request):
         'profit_loss': profit_loss,
         }
     return render(request, 'pointofsale/accounting.html', context)
+
+
+def filter_date(request):
+    selected_month = request.GET['month']
+    if selected_month == 'January':
+        selected_month_int = 1
+    elif selected_month == 'February':
+        selected_month_int = 2
+    elif selected_month == 'March':
+        selected_month_int = 3
+    elif selected_month == 'April':
+        selected_month_int = 4
+    elif selected_month == 'May':
+        selected_month_int = 5
+    elif selected_month == 'June':
+        selected_month_int = 6
+    elif selected_month == 'July':
+        selected_month_int = 7
+    elif selected_month == 'August':
+        selected_month_int = 8
+    elif selected_month == 'September':
+        selected_month_int = 9
+    elif selected_month == 'October':
+        selected_month_int = 10
+    elif selected_month == 'November':
+        selected_month_int = 11
+    elif selected_month == 'December':
+        selected_month_int = 12
+    purchase_item_qs = PurchaseItem.objects.filter(month=selected_month_int)
+    if purchase_item_qs.exists():
+        purchase_item = purchase_item_qs[0]
+        total_sales_by_month = Purchase.objects.filter(month=selected_month_int).aggregate(Sum('total_amount'))['total_amount__sum']
+        context = {'purchases': purchase_item_qs, 'selected_month': selected_month, 'total_sales_by_month':total_sales_by_month}
+        return render(request, 'pointofsale/report.html', context)
+
+    else:
+        purchases = PurchaseItem.objects.all()
+        context = {'purchases': purchases}
+        return render(request, 'pointofsale/report.html')
 
 def report(request):
     purchases = PurchaseItem.objects.all()
@@ -148,7 +188,21 @@ class SalesView(ListView):
     template_name = "pointofsale/sales.html"
     context_object_name = "products"
     paginate_by = 8
-    ordering = ['-date_created']
+    ordering = ['name']
+
+def search(request):
+    if request.method == 'POST':
+        search = request.POST['search']
+        search = search.lower()
+        if search:
+            match = Product.objects.filter(name__icontains=search)
+
+            if match:
+                return render(request, 'pointofsale/sales.html', {'products': match})
+            else:
+                messages.error(request, "No Product Found")
+    return render(request, 'pointofsale/sales.html')
+        
     
 class ProductDetailView(DetailView):
     model = Product
@@ -258,9 +312,6 @@ def receive_payment(request):
         purchase_item = purchase.product.all()
         purchase_item.update(purchased=True)
         for item in purchase_item:
-            print(item.product.id)
-            print(item.product.quantity)
-            print(item.quantity)
             Product.objects.filter(pk=int(item.product.id)).update(quantity=(item.product.quantity - item.quantity))
             item.save()
         purchase.total_amount = purchase.get_total()  

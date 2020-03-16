@@ -133,22 +133,26 @@ def add_category(request):
     return render(request, 'pointofsale/inventory.html', {'category_form': category_form})
 
 def add_product(request):
-    if request.method == 'POST':
-        product_form = AddProductForm(request.POST)
-        if product_form.is_valid():
-            Product = product_form.save(commit=False)
-            Product.staff = request.user
-            image = request.FILES['image_field']
-            file_save = FileSystemStorage()
-            file_save.save(image.name, image)
-            Product.image_field = image
-            Product = Product.save()
-            name = product_form.cleaned_data.get('name')
-            messages.success(request, f'{name} Product Added Successfully')
-            return redirect('pointofsale-inventory')
-    else:
-        product_form = AddProductForm()
-    return render(request, 'pointofsale/inventory.html', {'product_form': product_form})
+    try:
+        if request.method == 'POST':
+            product_form = AddProductForm(request.POST)
+            if product_form.is_valid():
+                Product = product_form.save(commit=False)
+                Product.staff = request.user
+                image = request.FILES['image_field']
+                file_save = FileSystemStorage()
+                file_save.save(image.name, image)
+                Product.image_field = image
+                Product = Product.save()
+                name = product_form.cleaned_data.get('name')
+                messages.success(request, f'{name} Product Added Successfully')
+                return redirect('pointofsale-inventory')
+        else:
+            product_form = AddProductForm()
+        return render(request, 'pointofsale/inventory.html', {'product_form': product_form})
+    except:
+        messages.warning(request, f'Add image before upload')
+        return render(request, 'pointofsale/inventory.html')
 
 def update_product(request):
     update_form = UpdateProductForm(request.POST)

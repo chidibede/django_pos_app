@@ -137,3 +137,14 @@ a.custom-card, a.custom-card:hover{
 .price{
     font-size: 20px;
 }
+
+@media (max-width: 768px){
+    .sidebar{
+        position: static;
+        height: auto;
+    }
+
+    .top-nav{
+        position: static;
+    }
+}

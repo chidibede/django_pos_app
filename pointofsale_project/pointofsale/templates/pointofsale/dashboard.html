@@ -99,10 +99,10 @@
                 <!-- End of sidebar -->
 
                 <!-- beginning of top navbar -->
-                <div class="col-xl-10 col-lg-9 col-md-8 top-nav fixed-top ml-auto mb-3">
+                <div class="col-xl-10 col-lg-9 col-md-8 top-nav fixed-top ml-md-auto mb-3">
                     <div class="row align-items-center p-2">
                         <div class="col-md-3">
-                            <a href="{% url 'pointofsale-dashboard' %}" class='nav-link d-block text-light sidebar-link text-center'>DASHBOARD</a>
+                            <a href="{% url 'pointofsale-dashboard' %}" class='nav-link d-block text-light sidebar-link text-md-center'>DASHBOARD</a>
                         </div>
                         <div class="col-md-4">
                             
@@ -112,7 +112,7 @@
                             <ul class="navbar-nav">
                                 <li class='nav-item'>
                                     <a href="{% url 'pointofsale-sales' %}" class="nav-link text-light sidebar-link">
-                                        <i class="fas fa-shopping-cart mr-4"></i>
+                                        <i class="fas fa-shopping-cart mr-md-4"></i>
                                         Sell
                                     </a>
                                 </li>
@@ -126,7 +126,7 @@
                                   </li>
                                 
                                 {% if user.is_authenticated %}
-                                <li class='nav-item ml-auto'>
+                                <li class='nav-item ml-md-auto'>
                                      <a href="{% url 'users-profile' %}" class='nav-link text-light sidebar-link'>{{ user.username }}</a>
                                 </li>
                                 {% endif %}

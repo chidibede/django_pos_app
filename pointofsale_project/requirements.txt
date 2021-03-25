@@ -39,7 +39,7 @@ python-dateutil==2.8.1
 python-printer-escpos==0.0.3
 pytz==2019.3
 pyusb==1.0.2
-PyYAML==5.3
+PyYAML==5.4
 qrcode==6.1
 regex==2020.1.8
 reportlab==3.5.32
